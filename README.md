@@ -59,9 +59,10 @@ El diseño 2 implementa el multiplicador de 64x64 bits utilizando una arquitectu
 	- Cierra el proyecto.
 
 2. Abrir el Vitis HLS Command Prompt, o alguna otra consola que corra Vitis HLS.
-3. Correr *script* softmax.tcl en Vitis HLS usando el modo de línea de comando (-f):
-   - `vitis_hls -f softmax.tcl`
-   - La frecuencia máxima estimada entre los últimos 6 mensajes informativos en la consola.
+3. Correr Vitis HLS indicando el *script* softmax.tcl
+	- `vitis_hls -f softmax.tcl` ó `vitis_hls softmax.tcl`
+		-el modificador `-f` no es necesario en algunas versiones de Vitis.
+	- La frecuencia máxima estimada entre los últimos 6 mensajes informativos en la consola.
 4. Revisar los reportes en **solution/syn/report**
 
 ## Árbol de archivos con su descripción
