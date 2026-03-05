@@ -25,9 +25,9 @@ El diseño 1 implementa un acelerador de la función softmax de 100 entradas y c
 
 La función softmax convierte un vector de N elementos y lo convierte en una distribución de probabilidad proporcional al exponencial de los elementos de entrada. Matemáticamente se define de la siguiente forma:
 
-\[
+$$
 \sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}
-\]
+$$
 
 A nivel de HLS este diseño se realizó la codificación sin ningún directiva.
 
