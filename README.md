@@ -42,40 +42,26 @@ El diseño 2 implementa el multiplicador de 64x64 bits utilizando una arquitectu
    4.5. Nivel 5: 4 -> 2 sumas + Etapa de pipeline
 
    4.6. Nivel 6: 2 -> suma final + Etapa de pipeline
-### Diseño 3
-
-El diseño 3 implementa el multiplicador de 64x64 bits usando el algoritmo de multiplicación de Booth (usando radix-2). Este algoritmo se usa para multiplicar dos números con signo. El algoritmo presenta los siguientes pasos:
-
-1. Inicializar los valores de los registros:
-  1.1 A = 0 (Acumulador).
-  1.2 Qm1 = 0
-  1.3 M = multiplicando.
-  1.4 Q = multiplicador.
-  1.5 Por ser de 64 bits el contador tendrá un valor inicial de 64 bits.
-2. Revisar el valor de {Q, Qm1}. Si es 00 ó 11 ir al paso 5. Si es 01 ir al paso 3 y si es 10 ir al paso 4.
-3. Calcular next_A = A + M.
-4. Calcular next_A = A - M.
-5. Realizar un acarreo aritmético de {A, Q, Qm1} y decrementar el contador en 1.
-6. Si el contador es 0, ir al paso 7. Si el contador es distinto de 0 ir al paso 2.
-7. Terminar y declarar el producto como válido.
-
-El diseño lógico de la microarquitectura se presenta a continuación en forma de diagrama de bloques:
-
-![booth_multiplier_block_diagram](./img/booth_multiplier.png)
 
 ## Instrucciones de construcción
 
-### Vivado (GUI)
-1. Abrir Vivado.
-2. Crear un proyecto para la Kria KV260 y seleccionar los archivos ubicados en la carpeta del diseño:
-   - `D1/` o `D2/` o `D3/`
-2. Generar el diagrama de bloques (PS + PL) y conexiones entre módulos.
-3. Correr:
-   - **Run Synthesis**
-   - **Run Implementation**
-4. Generar reportes:
-   - **Report Utilization**
-   - **Report Timing Summary**
+### Vitis HLS (Línea de Comandos)
+1. Los comandos para vitis se incluyen en el *script* softmax.tcl:
+
+	- Abre el proyecto
+		- Determina la función *top*
+		- Agrega los archivos fuente
+		- Abre la solución
+			- Determina el FPGA objetivo
+			- Define la frecuencia de reloj
+			- Configura la interfaz (axi), 
+		- Ejecuta la síntesis
+	- Cierra el proyecto.
+
+2. Abrir el Vitis HLS Command Prompt, o alguna otra consola que corra Vitis HLS.
+3. Correr *script* tcl en Vitis HLS usando el modo de línea de comando:
+   - `vitis_hls -f softmax.tcl`
+4. Revisar los reportes en **solution/syn/report**
 
 ## Árbol de archivos con su descripción
 ```
