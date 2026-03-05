@@ -46,7 +46,7 @@ El diseño 2 implementa el multiplicador de 64x64 bits utilizando una arquitectu
 ## Instrucciones de construcción
 
 ### Vitis HLS (Línea de Comandos)
-1. Los comandos para vitis se incluyen en el *script* softmax.tcl:
+1. Los comandos para Vitis HLS se incluyen en el *script* softmax.tcl:
 
 	- Abre el proyecto
 		- Determina la función *top*
@@ -59,8 +59,9 @@ El diseño 2 implementa el multiplicador de 64x64 bits utilizando una arquitectu
 	- Cierra el proyecto.
 
 2. Abrir el Vitis HLS Command Prompt, o alguna otra consola que corra Vitis HLS.
-3. Correr *script* tcl en Vitis HLS usando el modo de línea de comando:
+3. Correr *script* softmax.tcl en Vitis HLS usando el modo de línea de comando (-f):
    - `vitis_hls -f softmax.tcl`
+   - La frecuencia máxima estimada entre los últimos 6 mensajes informativos en la consola.
 4. Revisar los reportes en **solution/syn/report**
 
 ## Árbol de archivos con su descripción
