@@ -80,30 +80,31 @@ El diseño lógico de la microarquitectura se presenta a continuación en forma 
 ## Árbol de archivos con su descripción
 ```
 .
-├─ img/
-|  └─ booth_multiplier.png    # Diagrama de bloques del multiplicador de Booth
 ├─ D1/
-│  └─ mul64x64_uniciclo.v     # RTL del multiplicador 64x64 uniciclo
+│  ├─ softmax.cpp             # Softmax Accelerator - Design 1
+│  ├─ softmax.h               # Softmax Accelerator Header - Design 1
+│  ├─ softmax.tcl             # TCL Script - Design 1
+│  └─ softmax_tb.cc           # Softmax Accelerator Testbench - Design 1
 ├─ D2/
-│  ├─ mul64x64.sv             # Módulo top del multiplicador 64x64
-│  ├─ mul64x64_wrapper.v      # Wrapper del top en Verilog
-│  ├─ mul8x8.sv               # Módulo del multiplicador 8x8
-│  ├─ shifter.sv              # Módulo de desplazamiento de productos parciales
-│  └─ sum_tree.sv             # Árbol de sumas
-└─ D3/
-   ├─ booth_multiplier.sv     # RTL del multiplicador de Booth
-   └─ booth_multiplier_wrap.v # Wrapper del multiplicador de Booth (debe ser el Top)
+   ├─ softmax.cpp             # Softmax Accelerator - Design 2
+   ├─ softmax.h               # Softmax Accelerator Header - Design 2
+   ├─ softmax.tcl             # TCL Script - Design 2
+   └─ softmax_tb.cc           # Softmax Accelerator Testbench - Design 2
+
 ```
 
-## Tabla de resultados (AMD Kria KV260, 300 MHz)
+## Tabla de comparación de los diseños D1 y D2
 
-| Parámetro | Diseño 1 | Diseño 2 | Diseño 3 |
+| Métrica | Diseño 1 | Diseño 2 | Cambio |
 |----------|----------|----------|----------|
-| Timing / delay de la ruta crítica (ns) | 7.001 | 3.294 | 2,723 |
-| Frecuencia máxima lograda (MHz) | 142.8 | 303.6 | 367,2 |
-| Latencia (ciclos) | 1 | 7 | 64 |
-| LUT (CLB LUTs) | 173 | 5475 | 141 |
-| FF (CLB Registers) | 128 | 3664 | 330 |
+| Delay ruta crítica | 2.92ns | 3.35ns | +15% |
+| Fmax | 342.47 MHz | 298.78 MHz | -13% |
+| Latencia (ciclos) | 1288 | 1135 | -12% |
+| Intervalo | 1289 | 1063 | -18% |
+| LUT | 5331 | 4992 | -7% |
+| FF | 4515 | 5015 | +11% |
+| DSP | 9 | 12 | +33% |
+| VRAM | 32 | 33 | +3% |
 
 -------
 
