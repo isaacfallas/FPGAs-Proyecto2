@@ -4,44 +4,51 @@ https://github.com/isaacfallas/FPGAs-Proyecto2
 
 ## Descripción del proyecto
 
-Este repositorio contiene la implementación y resultados de **tres diseños** descritos en el enunciado del **Proyecto Corto 1**.  
-El objetivo es implementar los diseños en HDL utilizando SystemVerilog/Verilog, sintetizarlos e implementarlos en Vivado, y reportar resultados de **utilización** y **timing**.
+Este repositorio contiene el diseño, implementación y síntesis de dos aceleradores para la función softmax de 100 entradas.
+
+En el primer diseño el objetivo es realizar la codificación sin ninguna directiva (todo por defecto) y el segundo diseño corresponde a una propuesta de optimización del diseño 1.
+
+El objetivo de este proyecto es que sirva como un playground de la síntesis utilizando Vitis HLS de forma que permita conocer sobre los distintos pragmas que este contiene y cómo permiten realizar optimizaciones de diseños de forma más simplificada.
 
 ## Explicación de los diseños
 
 ### Diseño 1 
 
-El diseño 1 implementa un multiplicador de 64x64 bits utilizando una arquitectura de uniciclo. Este presenta cuatro entradas de 32 bits que representan la parte lsb y msb de los buses de datos que se desean operar, además de una entrada de reloj. Para la salida, presenta un resultado descomupesto en cuatro salidas de 32 bits. Dicho diseño se debe al GPIO utilizado que posee entradas y salidas de 32 bits.
+El diseño 1 implementa un acelerador de la función softmax de 100 entradas y cumple con las siguientes especificaciones:
 
-Los pasos realizados por el multiplicador son:
+* Uso de unidad de punto flotante.
+* Número de entradas de 100 elementos.
+* Número de salidad de 100 elementos.
+* Tanto las entradas como las salidad están dadas en arreglo de 100 como puertos.
+* Tanto las entradas como las salidas usan AXI-Memory Map.
+* Sintetizable para AMD Kria KV260 a 250 MHz.
 
-1. Recibir las cuatro entradas de 32 bits que representan a(lsb), a(msb), b(lsb) y b(msb), donde a y b son los factores en la multiplicación de 64 bits, así como la entrada del reloj.
-2. Concatenar a(lsb), a(msb), b(lsb) y b(msb) para realizar la multiplicación a*b.
-3. Ejecución de la multiplicación a*b.
-4. Asignar en cada flanco positivo del reloj, las salidas del producto descompuesto en cuatro canales de 32 bits. 
+La función softmax convierte un vector de N elementos y lo convierte en una distribución de probabilidad proporcional al exponencial de los elementos de entrada. Matemáticamente se define de la siguiente forma:
+
+\[
+\sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}
+\]
+
+A nivel de HLS este diseño se realizó la codificación sin ningún directiva.
 
 El diseño lógico de la microarquitectura se presenta a continuación en forma de diagrama de bloques:
 
-![single_cycle_block_diagram](./img/single_cycle.png)
+![design1_diagram](./img/softmax1.png)
+
+Como vemos en el diagrama anterior para implementar la función softmax inicialmente realiza una suma de los exponentes de los números de entrada. Finalizado el cálculo de la suma de exponentes se realiza el cálculo de la función softmax. Ambas etapas utilizan el FPU para poder manejar números en punto flotante.
+
 
 ### Diseño 2
-El diseño 2 implementa el multiplicador de 64x64 bits utilizando una arquitectura segmentada de multiplicadores de 8x8 con suma de productos parciales y registros. El diseño presenta las siguientes etapas:
-1. 64 Multiplicadores 8x8 que calculan los productos parciales de cada byte de los operandos de entrada: a y b.
-2. Etapa de pipeline antes de desplazamiento.
-3. 64 módulos de desplazamiento para extender los productos parciales a 128 bits.
-4. Árbol de sumas de productos parciales segmentado:
-   
-   4.1. Nivel 1: 64 -> 32 sumas + Etapa de pipeline
-   
-   4.2. Nivel 2: 32 -> 16 sumas + Etapa de pipeline
-   
-   4.3. Nivel 3: 16 -> 8 sumas + Etapa de pipeline
 
-   4.4. Nivel 4: 8 -> 4 sumas + Etapa de pipeline
+El diseño 2 implementa una optimización del diseño 1 mediante la adición de un pipeline por medio de la directiva HLS Pipeline. Adicionalmente, se le agregan FIFO streams tanto para la entrada como la salida de forma que se pueda tener una pequeña memoria que permita manejar el flujo de los datos de entrada y salida del pipeline implementado.
 
-   4.5. Nivel 5: 4 -> 2 sumas + Etapa de pipeline
+El diseño lógico de la microarquitectura se presenta a continuación en forma de diagrama de bloques:
 
-   4.6. Nivel 6: 2 -> suma final + Etapa de pipeline
+![design2_diagram](./img/softmax2.png)
+
+
+ Del diagrama anterior se observa que la principal diferencia con respecto al primer diseño es la adición del pipeline para ejecutar las etapas de suma de exponentes y el softmax de forma concurrente, además de los FIFO streams para poder manejar el flujo de entrada y salida de datos.
+
 
 ## Instrucciones de construcción
 
